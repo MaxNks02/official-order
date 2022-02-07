@@ -29,7 +29,7 @@ public abstract class BaseService<R extends BaseRepo<E>, E extends BaseEntity, D
 
     public List<D> getAll() {
         List<E> eList = repository.findAll();
-        return entityListDtoList(eList);
+        return entityListToDtoList(eList);
     }
 
     public D getById(long id) {
@@ -66,7 +66,7 @@ public abstract class BaseService<R extends BaseRepo<E>, E extends BaseEntity, D
 
     public abstract D update(D dto, long id);
 
-    private List<D> entityListDtoList(List<E> eList) {
+    private List<D> entityListToDtoList(List<E> eList) {
         if (eList.isEmpty()) {
             throw new RuntimeException();
         }
