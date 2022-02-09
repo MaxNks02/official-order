@@ -80,4 +80,8 @@ public class _OfficialOrder extends BaseEntity {
     @Column(nullable = false, name = "state")
     @NotNull(message = "State cannot be null or empty!")
     OffState state;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @NotNull(message = "Excel file ID filed mandatory")
+    _FileDb fileDb;
 }
