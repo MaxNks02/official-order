@@ -1,5 +1,9 @@
 package uz.davrbank.officialorder.service;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.davrbank.officialorder.config.FileDbConfig;
 import uz.davrbank.officialorder.dto.FileDbDto;
@@ -7,24 +11,23 @@ import uz.davrbank.officialorder.entity._FileDb;
 import uz.davrbank.officialorder.mapper.FileDbMapper;
 import uz.davrbank.officialorder.repo.FileDbRepo;
 
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
 public class FileDbService extends BaseService<FileDbRepo, _FileDb, FileDbDto, FileDbMapper> {
-    private final Path fileLocation;
 
-    public FileDbService(FileDbRepo repository, FileDbMapper mapper, FileDbConfig fileDbConfig) {
+    public FileDbService(FileDbRepo repository, FileDbMapper mapper) {
         super(repository, mapper);
-        this.fileLocation = Paths.get(fileDbConfig.getUploadDir())
-                .toAbsolutePath().normalize();
+    }
 
-        try {
-            Files.createDirectories(this.fileLocation);
-        } catch (Exception ex) {
-            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
-        }
+    public ResponseEntity<?> downloadFile() throws MalformedURLException {
+        String file = "src/main/resources/assets/Slujebka.xlsx";
+        Path path = Paths.get(file);
+        Resource resource = new UrlResource(path.toUri());
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
     }
 
     @Override
