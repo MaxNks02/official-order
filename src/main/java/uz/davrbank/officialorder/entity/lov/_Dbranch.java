@@ -1,11 +1,13 @@
 package uz.davrbank.officialorder.entity.lov;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import uz.davrbank.officialorder.entity._OfficialOrder;
 
 import javax.persistence.*;
 import java.util.List;
 
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,7 +15,12 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "davr_branch")
-public class _Dbranch extends LOVEntity {
+public class _Dbranch extends LOVEntity{
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "branch", cascade = CascadeType.ALL)
     private List<_OfficialOrder> officialOrders;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "branch", cascade = CascadeType.ALL)
+    private List<_Employee> employees;
 }

@@ -21,7 +21,7 @@ public class LOVEntity implements Serializable {
 
     @Id
     @Column(nullable = false, length = 5)
-    private String code;
+    private String id;
 
     @Column(nullable = false, length = 200)
     @NotBlank(message = "Name cannot be null")

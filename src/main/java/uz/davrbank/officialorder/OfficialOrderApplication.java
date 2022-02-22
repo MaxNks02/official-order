@@ -3,11 +3,8 @@ package uz.davrbank.officialorder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import uz.davrbank.officialorder.config.FileDbConfig;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@EnableConfigurationProperties({
-        FileDbConfig.class
-})
 @SpringBootApplication
 public class OfficialOrderApplication {
 

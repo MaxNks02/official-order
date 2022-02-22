@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
@@ -21,11 +22,7 @@ import java.time.LocalDate;
 @Table(name = "official_order")
 public class _OfficialOrder extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "branch", referencedColumnName = "code", nullable = false)
-    _Dbranch branch;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "doc_type", referencedColumnName = "code", nullable = false)
+    @JoinColumn(name = "doc_type", referencedColumnName = "id", nullable = false)
     _DocType docType;
 
     @NotNull(message = "Document number cannot be null or empty!")
@@ -43,7 +40,7 @@ public class _OfficialOrder extends BaseEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "cor_mfo", referencedColumnName = "code", nullable = false)
+    @JoinColumn(name = "cor_mfo", referencedColumnName = "id", nullable = false)
     _Smfo corMfo;
 
     @NotNull(message = "Creditor account cannot be null!")
@@ -54,7 +51,7 @@ public class _OfficialOrder extends BaseEntity {
     @Column(nullable = false, length = 80)
     String corName;
 
-    @NotBlank(message = "Debit or Credit!")
+    @NotBlank(message = "Must be D or C!")
     @Column(nullable = false, length = 1)
     String dOrC;
 
@@ -63,7 +60,7 @@ public class _OfficialOrder extends BaseEntity {
     Double summa;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "code", referencedColumnName = "code", nullable = false)
+    @JoinColumn(name = "code", referencedColumnName = "id", nullable = false)
     _Snazn code;
 
     @NotBlank(message = "Purpose cannot be null or empty!")
@@ -75,13 +72,16 @@ public class _OfficialOrder extends BaseEntity {
     @Column(nullable = false)
     LocalDate valueDate;
 
-
     @Convert(converter = OffState.StateConverter.class)
     @Column(nullable = false, name = "state")
     @NotNull(message = "State cannot be null or empty!")
     OffState state;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @NotNull(message = "Excel file ID filed mandatory")
-    _FileDb fileDb;
+    @JoinColumn(name = "branch", referencedColumnName = "id", nullable = false)
+    _Dbranch branch;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "employee", referencedColumnName = "id", nullable = false)
+    _Employee employee;
 }

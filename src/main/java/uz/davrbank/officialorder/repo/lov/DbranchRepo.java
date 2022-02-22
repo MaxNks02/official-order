@@ -4,5 +4,5 @@ import org.springframework.stereotype.Repository;
 import uz.davrbank.officialorder.entity.lov._Dbranch;
 
 @Repository
-public interface DBranchRepo extends LOVRepo<_Dbranch> {
+public interface DbranchRepo extends LOVRepo<_Dbranch> {
 }
