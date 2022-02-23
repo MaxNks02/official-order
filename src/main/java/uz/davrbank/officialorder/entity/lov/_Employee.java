@@ -10,8 +10,8 @@ import uz.davrbank.officialorder.entity.lov._Dbranch;
 import javax.persistence.*;
 import java.util.List;
 
-@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor

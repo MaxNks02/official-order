@@ -6,10 +6,8 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
 public enum OffState {
-    UNDEFINED("Неопределен"),
     ENTERED("Введен"),
     VALIDATED("Утверждён"),
-    REJECTED("Отклонён"),
     DELETED("Удален");
 
     public final String value;

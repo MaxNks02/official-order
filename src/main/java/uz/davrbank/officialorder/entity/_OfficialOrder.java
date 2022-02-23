@@ -11,8 +11,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 @Getter
 @Setter
 @AllArgsConstructor
@@ -52,8 +52,8 @@ public class _OfficialOrder extends BaseEntity {
     String corName;
 
     @NotBlank(message = "Must be D or C!")
-    @Column(nullable = false, length = 1)
-    String dOrC;
+    @Column(nullable = false, length = 1, name = "type_DC")
+    String typeDC;
 
     @NotNull(message = "Summa cannot be null or empty!")
     @Column(nullable = false, length = 20)
@@ -67,10 +67,19 @@ public class _OfficialOrder extends BaseEntity {
     @Column(nullable = false, length = 500)
     String purpose;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @NotNull(message = "Document date cannot be null")
     @Column(nullable = false)
     LocalDate valueDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @NotNull(message = "Download date cannot be null")
+    @Column(nullable = false)
+    LocalDate downloadDate;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "file_info", referencedColumnName = "id", nullable = false)
+    _FileInfo fileInfo;
 
     @Convert(converter = OffState.StateConverter.class)
     @Column(nullable = false, name = "state")
@@ -84,4 +93,7 @@ public class _OfficialOrder extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "employee", referencedColumnName = "id", nullable = false)
     _Employee employee;
+
+    @OneToOne(mappedBy = "officialOrder")
+    _OffTransaction offTransaction;
 }

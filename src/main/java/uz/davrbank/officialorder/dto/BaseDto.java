@@ -20,7 +20,7 @@ public class BaseDto implements Serializable {
     private static final long serialVersionUID = 5190598237215532904L;
 
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
     @JsonProperty("created_at")
     private String createdAt = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
 }

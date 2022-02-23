@@ -4,14 +4,12 @@ package uz.davrbank.officialorder.entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,5 +30,9 @@ public class _OffTransaction extends BaseEntity {
 
     @NotNull
     @Column(nullable = false, length = 1)
-    String transactionType;
+    String typeDC;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "official_order", referencedColumnName = "id")
+    _OfficialOrder officialOrder;
 }

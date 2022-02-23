@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import uz.davrbank.officialorder.exception.BadRequestException;
 import uz.davrbank.officialorder.exception.handler.ApiErrorMessages;
-import uz.davrbank.officialorder.exception.handler.RestExceptionHandler;
+import uz.davrbank.officialorder.service.ExcelHelper;
 import uz.davrbank.officialorder.service.OfficialOrderService;
 
 import java.time.LocalDateTime;
@@ -33,10 +33,8 @@ public class OfficialOrderController extends BaseController<OfficialOrderService
     @PostMapping(value = UPLOAD)
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile files) {
         if (!files.isEmpty()) {
-            String mimeType = "xlsx";
-            String fileName = files.getOriginalFilename();
-            String fileType = Objects.requireNonNull(fileName).substring(fileName.length() - 4);
-            if (fileType.equals(mimeType)) {
+            String fileType = Objects.requireNonNull(files.getOriginalFilename()).substring(files.getOriginalFilename().length() - 4);
+            if (fileType.equals(ExcelHelper.mimeType)) {
                 return service.uploadFile(files);
             }
             throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "File type must be \"xlsx\"!"));

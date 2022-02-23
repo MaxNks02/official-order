@@ -17,6 +17,12 @@ public abstract class BaseController<S extends BaseService> {
     public static final String UPLOAD = "/upload";
     //    FILE_DB CONTROLLER END
 
+    //    TRANSACTION CONTROLLER BEGIN
+    public static final String TRANSACTION = SLUJEBKA + "/transaction";
+    public static final String ONE = "/one";
+    public static final String LIST = "/list";
+//    TRANSACTION CONTROLLER END
+
 
     protected S service;
 

@@ -2,11 +2,13 @@ package uz.davrbank.officialorder.entity.lov;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import uz.davrbank.officialorder.entity._OfficialOrder;
 
 import javax.persistence.*;
 import java.util.List;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
 @Getter
 @Setter

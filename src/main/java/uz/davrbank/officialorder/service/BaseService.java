@@ -3,6 +3,9 @@ package uz.davrbank.officialorder.service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.davrbank.officialorder.dto.BaseDto;
 import uz.davrbank.officialorder.entity.BaseEntity;
+import uz.davrbank.officialorder.exception.CustomNotFoundException;
+import uz.davrbank.officialorder.exception.DatabaseException;
+import uz.davrbank.officialorder.exception.handler.ApiErrorMessages;
 import uz.davrbank.officialorder.mapper.BaseMapper;
 import uz.davrbank.officialorder.repo.BaseRepo;
 
@@ -43,20 +46,18 @@ public abstract class BaseService<R extends BaseRepo<E>, E extends BaseEntity, D
         try {
             repository.save(entity);
         } catch (RuntimeException exception) {
-            throw new RuntimeException(exception.getMessage());
+            throw new DatabaseException(String.format(ApiErrorMessages.INTERNAL_SERVER_ERROR + " %s", exception.getMessage()));
         }
         return mapper.convertFromEntity(entity);
     }
 
     @Transactional
-    public boolean createAll(List<D> dtoList) {
-        List<E> entityList = mapper.convertFromDtoList(dtoList);
+    public List<D> createAll(List<E> entityList) {
         try {
-            repository.saveAll(entityList);
+            return entityListToDtoList(repository.saveAll(entityList));
         } catch (RuntimeException exception) {
-            throw new RuntimeException(exception.getMessage());
+            throw new DatabaseException(String.format(ApiErrorMessages.INTERNAL_SERVER_ERROR + " %s", exception.getMessage()));
         }
-        return true;
     }
 
     public void deleteById(long id) {
@@ -68,7 +69,7 @@ public abstract class BaseService<R extends BaseRepo<E>, E extends BaseEntity, D
 
     private List<D> entityListToDtoList(List<E> eList) {
         if (eList.isEmpty()) {
-            throw new RuntimeException();
+            throw new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + " %s", "List empty!"));
         }
         return mapper.convertFromEntityList(eList);
     }
