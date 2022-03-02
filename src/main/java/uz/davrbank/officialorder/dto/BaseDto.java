@@ -6,11 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+//@MappedSuperclass
+@SuperBuilder
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,15 +1,12 @@
 package uz.davrbank.officialorder.entity.lov;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import uz.davrbank.officialorder.entity._OfficialOrder;
-import uz.davrbank.officialorder.entity.lov.LOVEntity;
-import uz.davrbank.officialorder.entity.lov._Dbranch;
 
 import javax.persistence.*;
-import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
 @Getter
@@ -20,11 +17,8 @@ import java.util.List;
 @Entity
 @Table(name = "employee")
 public class _Employee extends LOVEntity {
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<_OfficialOrder> officialOrders;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "branch", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
     _Dbranch branch;
 }

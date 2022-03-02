@@ -1,12 +1,15 @@
 package uz.davrbank.officialorder.dto;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import uz.davrbank.officialorder.entity._OfficialOrder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @ToString
+@SuperBuilder
 @Builder
 @Getter
 @Setter
@@ -25,4 +28,7 @@ public class OffTransactionDto extends BaseDto {
     @Size(min = 1, max = 1, message = "Transaction type must be 1 characters!")
     @NotBlank(message = "Transaction type must be D or C!")
     String typeDC;
+
+    @NotNull(message = "Official order field not null!")
+    _OfficialOrder officialOrder;
 }

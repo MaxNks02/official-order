@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import uz.davrbank.officialorder.entity.lov.OffState;
-import uz.davrbank.officialorder.entity.lov._DocType;
-import uz.davrbank.officialorder.entity.lov._Smfo;
-import uz.davrbank.officialorder.entity.lov._Snazn;
+import lombok.experimental.SuperBuilder;
+import uz.davrbank.officialorder.entity.lov.*;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +14,7 @@ import java.time.LocalDate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ToString
+@SuperBuilder
 @Builder
 @Getter
 @Setter
@@ -26,6 +25,7 @@ public class OfficialOrderDto extends BaseDto{
     _DocType docType;
     @JsonProperty(value = "DOC_ID")
     Integer docNumber;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonProperty(value = "DOC_DATE")
     LocalDate docDate;
     @JsonProperty(value = "DEBTOR_ACCOUNT")
@@ -46,12 +46,20 @@ public class OfficialOrderDto extends BaseDto{
     @JsonProperty(value = "PAYMENT_PURPOSE")
     String purpose;
 
-
     @JsonProperty(value = "download_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate downloadDate;
 
+    @JsonProperty(value = "file_name")
+    String fileName;
+
     @JsonProperty(value = "state")
     @Enumerated(EnumType.STRING)
     OffState state;
+
+    @JsonProperty(value = "branch")
+    _Dbranch dbranch;
+
+    @JsonProperty(value = "employee")
+    _Employee employee;
 }

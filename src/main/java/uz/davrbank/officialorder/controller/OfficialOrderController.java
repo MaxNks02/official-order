@@ -11,6 +11,7 @@ import uz.davrbank.officialorder.service.ExcelHelper;
 import uz.davrbank.officialorder.service.OfficialOrderService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import static uz.davrbank.officialorder.controller.BaseController.*;
@@ -40,5 +41,19 @@ public class OfficialOrderController extends BaseController<OfficialOrderService
             throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "File type must be \"xlsx\"!"));
         }
         throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "File cannot be null!"));
+    }
+
+    @PostMapping(value = DELETE)
+    public ResponseEntity<?> deleteRows(@RequestBody List<Long> idList){
+        if (idList.isEmpty()) {
+            throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "Id cannot be null!"));
+        }
+        return service.deleteRows(idList);
+    }
+
+    @GetMapping(value = GET_ALL)
+    public ResponseEntity<?> getAllByState() {
+        logger.info("Request to download file. Time: " + LocalDateTime.now());
+        return service.getAllByState();
     }
 }

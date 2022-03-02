@@ -3,6 +3,7 @@ package uz.davrbank.officialorder.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import uz.davrbank.officialorder.entity.lov.*;
 import uz.davrbank.officialorder.entity.lov.OffState;
 
@@ -17,12 +18,14 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 @Builder
 @Entity
 @Table(name = "official_order")
 public class _OfficialOrder extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "doc_type", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "doc_type", nullable = false)
+    @ToString.Exclude
     _DocType docType;
 
     @NotNull(message = "Document number cannot be null or empty!")
@@ -39,8 +42,9 @@ public class _OfficialOrder extends BaseEntity {
     String debtorAccount;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "cor_mfo", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
     _Smfo corMfo;
 
     @NotNull(message = "Creditor account cannot be null!")
@@ -59,8 +63,9 @@ public class _OfficialOrder extends BaseEntity {
     @Column(nullable = false, length = 20)
     Double summa;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "code", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
     _Snazn code;
 
     @NotBlank(message = "Purpose cannot be null or empty!")
@@ -68,8 +73,6 @@ public class _OfficialOrder extends BaseEntity {
     String purpose;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @NotNull(message = "Document date cannot be null")
-    @Column(nullable = false)
     LocalDate valueDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -77,21 +80,27 @@ public class _OfficialOrder extends BaseEntity {
     @Column(nullable = false)
     LocalDate downloadDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "file_info", referencedColumnName = "id", nullable = false)
-    _FileInfo fileInfo;
+    @Column(name = "file_name", nullable = false)
+    @NotBlank(message = "File name cannot be null or empty!")
+    String fileName;
+
+    @Column(name = "file_id", nullable = false)
+    @NotNull(message = "File id cannot be null")
+    Long fileId;
 
     @Convert(converter = OffState.StateConverter.class)
     @Column(nullable = false, name = "state")
     @NotNull(message = "State cannot be null or empty!")
     OffState state;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "branch", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
     _Dbranch branch;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "employee", referencedColumnName = "id", nullable = false)
+    @ToString.Exclude
     _Employee employee;
 
     @OneToOne(mappedBy = "officialOrder")

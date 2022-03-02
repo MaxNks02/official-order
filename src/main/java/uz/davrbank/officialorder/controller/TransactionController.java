@@ -17,19 +17,11 @@ public class TransactionController extends BaseController<OffTransactionService>
         super(service);
     }
 
-    @PutMapping(value = ONE)
-    public ResponseEntity<?> oneTransaction(@PathVariable("id") Long id){
-        if (id == null) {
-            throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "Id cannot be null!"));
-        }
-        return service.oneTransaction(id);
-    }
-
-    @PostMapping(value = LIST)
-    public ResponseEntity<?> listTransaction(@RequestBody List<Long> idList){
+    @PostMapping(value = CREATE)
+    public ResponseEntity<?> createTransaction(@RequestBody List<Long> idList){
         if (idList.isEmpty()) {
             throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "Id cannot be null!"));
         }
-        return service.listTransaction(idList);
+        return service.createTransaction(idList);
     }
 }

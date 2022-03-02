@@ -41,14 +41,13 @@ public abstract class BaseService<R extends BaseRepo<E>, E extends BaseEntity, D
     }
 
     @Transactional
-    public D create(D dto) {
+    public E create(D dto) {
         E entity = mapper.convertFromDto(dto);
         try {
-            repository.save(entity);
+            return repository.save(entity);
         } catch (RuntimeException exception) {
             throw new DatabaseException(String.format(ApiErrorMessages.INTERNAL_SERVER_ERROR + " %s", exception.getMessage()));
         }
-        return mapper.convertFromEntity(entity);
     }
 
     @Transactional

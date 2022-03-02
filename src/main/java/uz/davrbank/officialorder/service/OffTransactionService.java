@@ -10,7 +10,6 @@ import uz.davrbank.officialorder.dto.OffTransactionDto;
 import uz.davrbank.officialorder.entity._OffTransaction;
 import uz.davrbank.officialorder.entity._OfficialOrder;
 import uz.davrbank.officialorder.entity.lov.OffState;
-import uz.davrbank.officialorder.exception.BadRequestException;
 import uz.davrbank.officialorder.exception.CustomNotFoundException;
 import uz.davrbank.officialorder.exception.DatabaseException;
 import uz.davrbank.officialorder.exception.handler.ApiErrorMessages;
@@ -18,6 +17,7 @@ import uz.davrbank.officialorder.mapper.OffTransactionMapper;
 import uz.davrbank.officialorder.repo.OffTransactionRepo;
 import uz.davrbank.officialorder.repo.OfficialOrderRepo;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,17 +30,11 @@ public class OffTransactionService extends BaseService<OffTransactionRepo, _OffT
         this.officialOrderRepo = officialOrderRepo;
     }
 
-    public ResponseEntity<?> oneTransaction(Long id) {
-        _OfficialOrder officialOrder = officialOrderRepo.findById(id).orElseThrow(() -> new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + "%s", "Employee not found")));
-        OffTransactionDto offTransaction = creteTransaction(officialOrder);
-        return ResponseHandler.generateResponse("Transaction successfully created!", HttpStatus.OK, offTransaction);
-    }
-
-    public ResponseEntity<?> listTransaction(List<Long> idList) {
+    public ResponseEntity<?> createTransaction(List<Long> idList) {
         List<OffTransactionDto> dtoList = new LinkedList<>();
         for (Long id:idList) {
             _OfficialOrder entity = officialOrderRepo.findById(id).orElseThrow(() -> new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + "%s", "Employee not found")));
-            OffTransactionDto dto = creteTransaction(entity);
+            OffTransactionDto dto = saveTransaction(entity);
             dtoList.add(dto);
         }
         if (!dtoList.isEmpty()){
@@ -50,7 +44,7 @@ public class OffTransactionService extends BaseService<OffTransactionRepo, _OffT
     }
 
     @Transactional
-    OffTransactionDto creteTransaction(_OfficialOrder officialOrder) {
+    OffTransactionDto saveTransaction(_OfficialOrder officialOrder) {
         _OffTransaction offTransaction = new _OffTransaction();
         if (officialOrder.getTypeDC().equals("C")){
             offTransaction.setDebit(officialOrder.getCreditAccount());
@@ -62,6 +56,7 @@ public class OffTransactionService extends BaseService<OffTransactionRepo, _OffT
         offTransaction.setTypeDC(officialOrder.getTypeDC());
         offTransaction.setOfficialOrder(officialOrder);
         officialOrder.setState(OffState.VALIDATED);
+        officialOrder.setValueDate(LocalDate.now());
         try {
             officialOrderRepo.save(officialOrder);
             getRepository().save(offTransaction);

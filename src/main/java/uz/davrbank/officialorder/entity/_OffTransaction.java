@@ -3,6 +3,7 @@ package uz.davrbank.officialorder.entity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @Builder
 @Entity
 @Table(name = "official_order_transactions")
@@ -32,7 +34,7 @@ public class _OffTransaction extends BaseEntity {
     @Column(nullable = false, length = 1)
     String typeDC;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "official_order", referencedColumnName = "id")
     _OfficialOrder officialOrder;
 }
