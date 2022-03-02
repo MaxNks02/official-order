@@ -1,5 +1,6 @@
 package uz.davrbank.officialorder.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ import java.util.List;
 public class OffTransactionService extends BaseService<OffTransactionRepo, _OffTransaction, OffTransactionDto, OffTransactionMapper>{
     private final OfficialOrderRepo officialOrderRepo;
 
-    public OffTransactionService(OffTransactionRepo repository, OffTransactionMapper mapper, OfficialOrderRepo officialOrderRepo) {
+    public OffTransactionService(OffTransactionRepo repository, @Qualifier("offTransactionMapperImpl") OffTransactionMapper mapper, OfficialOrderRepo officialOrderRepo) {
         super(repository, mapper);
         this.officialOrderRepo = officialOrderRepo;
     }

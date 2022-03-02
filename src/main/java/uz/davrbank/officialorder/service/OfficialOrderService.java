@@ -1,5 +1,6 @@
 package uz.davrbank.officialorder.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -37,7 +38,7 @@ public class OfficialOrderService extends BaseService<OfficialOrderRepo, _Offici
     private final DbranchRepo dbranchRepo;
     private final ExcelHelper excelHelper;
 
-    public OfficialOrderService(OfficialOrderRepo repository, OfficialOrderMapper mapper, EmployeeRepo employeeRepo, DbranchRepo dbranchRepo, ExcelHelper excelHelper) {
+    public OfficialOrderService(OfficialOrderRepo repository, @Qualifier("officialOrderMapperImpl") OfficialOrderMapper mapper, EmployeeRepo employeeRepo, DbranchRepo dbranchRepo, ExcelHelper excelHelper) {
         super(repository, mapper);
         this.employeeRepo = employeeRepo;
         this.dbranchRepo = dbranchRepo;
