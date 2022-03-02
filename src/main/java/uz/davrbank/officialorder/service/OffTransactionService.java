@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Service
-public class OffTransactionService extends BaseService<OffTransactionRepo, _OffTransaction, OffTransactionDto, OffTransactionMapper>{
+public class OffTransactionService extends BaseService<OffTransactionRepo, _OffTransaction, OffTransactionDto, OffTransactionMapper> {
     private final OfficialOrderRepo officialOrderRepo;
 
     public OffTransactionService(OffTransactionRepo repository, @Qualifier("offTransactionMapperImpl") OffTransactionMapper mapper, OfficialOrderRepo officialOrderRepo) {
@@ -33,21 +33,29 @@ public class OffTransactionService extends BaseService<OffTransactionRepo, _OffT
 
     public ResponseEntity<?> createTransaction(List<Long> idList) {
         List<OffTransactionDto> dtoList = new LinkedList<>();
-        for (Long id:idList) {
+        for (Long id : idList) {
             _OfficialOrder entity = officialOrderRepo.findById(id).orElseThrow(() -> new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + "%s", "Employee not found")));
-            OffTransactionDto dto = saveTransaction(entity);
+            _OffTransaction transaction = saveTransaction(entity);
+            entity.setState(OffState.VALIDATED);
+            entity.setValueDate(LocalDate.now());
+            try {
+                officialOrderRepo.save(entity);
+            }catch (RuntimeException exception){
+                throw new DatabaseException(String.format(ApiErrorMessages.INTERNAL_SERVER_ERROR + " %s", exception.getMessage()));
+            }
+            OffTransactionDto dto = getMapper().convertFromEntity(transaction);
             dtoList.add(dto);
         }
-        if (!dtoList.isEmpty()){
+        if (!dtoList.isEmpty()) {
             return ResponseHandler.generateResponse("Transaction successfully created!", HttpStatus.OK, dtoList);
         }
         throw new DatabaseException(String.format(ApiErrorMessages.INTERNAL_SERVER_ERROR + " %s", "Transactions failed!"));
     }
 
     @Transactional
-    OffTransactionDto saveTransaction(_OfficialOrder officialOrder) {
+    _OffTransaction saveTransaction(_OfficialOrder officialOrder) {
         _OffTransaction offTransaction = new _OffTransaction();
-        if (officialOrder.getTypeDC().equals("C")){
+        if (officialOrder.getTypeDC().equals("C")) {
             offTransaction.setDebit(officialOrder.getCreditAccount());
             offTransaction.setCredit(officialOrder.getDebtorAccount());
         }
@@ -56,15 +64,11 @@ public class OffTransactionService extends BaseService<OffTransactionRepo, _OffT
         offTransaction.setSumma(officialOrder.getSumma());
         offTransaction.setTypeDC(officialOrder.getTypeDC());
         offTransaction.setOfficialOrder(officialOrder);
-        officialOrder.setState(OffState.VALIDATED);
-        officialOrder.setValueDate(LocalDate.now());
         try {
-            officialOrderRepo.save(officialOrder);
-            getRepository().save(offTransaction);
-        }catch (DataIntegrityViolationException exception){
+            return getRepository().save(offTransaction);
+        } catch (DataIntegrityViolationException exception) {
             throw new DatabaseException(String.format(ApiErrorMessages.INTERNAL_SERVER_ERROR + " %s", exception.getMessage()));
         }
-        return getMapper().convertFromEntity(offTransaction);
     }
 
     @Override

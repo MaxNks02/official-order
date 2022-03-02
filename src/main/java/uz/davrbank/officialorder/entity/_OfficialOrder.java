@@ -5,7 +5,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import uz.davrbank.officialorder.entity.lov.*;
-import uz.davrbank.officialorder.entity.lov.OffState;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

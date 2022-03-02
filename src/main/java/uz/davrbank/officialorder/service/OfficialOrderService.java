@@ -60,7 +60,8 @@ public class OfficialOrderService extends BaseService<OfficialOrderRepo, _Offici
     @Transactional
     public ResponseEntity<?> uploadFile(MultipartFile files) {
         List<OfficialOrderDto> dtoList = excelHelper.excelToDtoList(files);
-        List<_OfficialOrder> entityList = dtoListToEntityList(dtoList, files.getOriginalFilename(), System.currentTimeMillis());
+        String fileName = files.getOriginalFilename().substring(0, files.getOriginalFilename().length()-5);
+        List<_OfficialOrder> entityList = dtoListToEntityList(dtoList, fileName, System.currentTimeMillis());
         List<OfficialOrderDto> responseDtoList = createAll(entityList);
         return ResponseHandler.generateResponse("All excel file data", HttpStatus.OK, responseDtoList);
     }
