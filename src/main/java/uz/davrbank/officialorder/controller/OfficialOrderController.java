@@ -52,8 +52,8 @@ public class OfficialOrderController extends BaseController<OfficialOrderService
     }
 
     @GetMapping(value = GET_ALL)
-    public ResponseEntity<?> getAllByState() {
-        logger.info("Request to download file. Time: " + LocalDateTime.now());
-        return service.getAllByState();
+    public ResponseEntity<?> getAllByState(@RequestParam(value = "type", required = false) String type) {
+        logger.info("Request to get all data. Time: " + LocalDateTime.now());
+        return service.getAllByState(type);
     }
 }

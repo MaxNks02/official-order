@@ -11,6 +11,7 @@ import uz.davrbank.officialorder.dto.OffTransactionDto;
 import uz.davrbank.officialorder.entity._OffTransaction;
 import uz.davrbank.officialorder.entity._OfficialOrder;
 import uz.davrbank.officialorder.entity.lov.OffState;
+import uz.davrbank.officialorder.exception.BadRequestException;
 import uz.davrbank.officialorder.exception.CustomNotFoundException;
 import uz.davrbank.officialorder.exception.DatabaseException;
 import uz.davrbank.officialorder.exception.handler.ApiErrorMessages;
@@ -34,7 +35,10 @@ public class OffTransactionService extends BaseService<OffTransactionRepo, _OffT
     public ResponseEntity<?> createTransaction(List<Long> idList) {
         List<OffTransactionDto> dtoList = new LinkedList<>();
         for (Long id : idList) {
-            _OfficialOrder entity = officialOrderRepo.findById(id).orElseThrow(() -> new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + "%s", "Employee not found")));
+            _OfficialOrder entity = officialOrderRepo.findById(id).orElseThrow(() -> new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + "%s", "Official order not found")));
+            if (entity.getState().equals(OffState.DELETED)){
+                throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "The state of the deleted data cannot be validated"));
+            }
             _OffTransaction transaction = saveTransaction(entity);
             entity.setState(OffState.VALIDATED);
             entity.setValueDate(LocalDate.now());

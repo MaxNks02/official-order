@@ -25,7 +25,7 @@ public class OfficialOrderDto extends BaseDto{
     _DocType docType;
     @JsonProperty(value = "DOC_ID")
     Integer docNumber;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @JsonProperty(value = "DOC_DATE")
     LocalDate docDate;
     @JsonProperty(value = "DEBTOR_ACCOUNT")
@@ -46,20 +46,20 @@ public class OfficialOrderDto extends BaseDto{
     @JsonProperty(value = "PAYMENT_PURPOSE")
     String purpose;
 
-    @JsonProperty(value = "download_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonProperty(value = "DOWNLOAD_DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     LocalDate downloadDate;
 
     @JsonProperty(value = "file_name")
     String fileName;
 
-    @JsonProperty(value = "state")
+    @JsonProperty(value = "STATE")
     @Enumerated(EnumType.STRING)
     OffState state;
 
     @JsonProperty(value = "branch")
     _Dbranch dbranch;
 
-    @JsonProperty(value = "employee")
+    @JsonProperty(value = "EMPLOYEE")
     _Employee employee;
 }

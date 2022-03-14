@@ -34,7 +34,7 @@ public class _OffTransaction extends BaseEntity {
     @Column(nullable = false, length = 1)
     String typeDC;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "official_order", referencedColumnName = "id")
     _OfficialOrder officialOrder;
 }

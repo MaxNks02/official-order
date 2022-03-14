@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,5 +25,5 @@ public class BaseDto implements Serializable {
     @JsonProperty("id")
     private Long id;
     @JsonProperty("created_at")
-    private String createdAt = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
+    private String createdAt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
 }

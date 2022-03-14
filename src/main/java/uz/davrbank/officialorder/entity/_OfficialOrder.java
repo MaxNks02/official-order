@@ -31,7 +31,7 @@ public class _OfficialOrder extends BaseEntity {
     @Column(nullable = false, length = 10)
     Integer docNumber;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @NotNull(message = "Document date cannot be null")
     @Column(nullable = false)
     LocalDate docDate;
@@ -71,10 +71,10 @@ public class _OfficialOrder extends BaseEntity {
     @Column(nullable = false, length = 500)
     String purpose;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     LocalDate valueDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @NotNull(message = "Download date cannot be null")
     @Column(nullable = false)
     LocalDate downloadDate;
@@ -102,6 +102,6 @@ public class _OfficialOrder extends BaseEntity {
     @ToString.Exclude
     _Employee employee;
 
-    @OneToOne(mappedBy = "officialOrder")
-    _OffTransaction offTransaction;
+//    @OneToOne(mappedBy = "officialOrder")
+//    _OffTransaction offTransaction;
 }

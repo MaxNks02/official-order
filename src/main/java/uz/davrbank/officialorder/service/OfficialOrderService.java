@@ -1,5 +1,6 @@
 package uz.davrbank.officialorder.service;
 
+import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -38,6 +39,10 @@ public class OfficialOrderService extends BaseService<OfficialOrderRepo, _Offici
     private final DbranchRepo dbranchRepo;
     private final ExcelHelper excelHelper;
 
+    private static final String DELETED = "deleted";
+    private static final String VALIDATED = "validated";
+    private static final String ENTERED = "entered";
+
     public OfficialOrderService(OfficialOrderRepo repository, @Qualifier("officialOrderMapperImpl") OfficialOrderMapper mapper, EmployeeRepo employeeRepo, DbranchRepo dbranchRepo, ExcelHelper excelHelper) {
         super(repository, mapper);
         this.employeeRepo = employeeRepo;
@@ -60,7 +65,7 @@ public class OfficialOrderService extends BaseService<OfficialOrderRepo, _Offici
     @Transactional
     public ResponseEntity<?> uploadFile(MultipartFile files) {
         List<OfficialOrderDto> dtoList = excelHelper.excelToDtoList(files);
-        String fileName = files.getOriginalFilename().substring(0, files.getOriginalFilename().length()-5);
+        String fileName = files.getOriginalFilename().substring(0, files.getOriginalFilename().length() - 5);
         List<_OfficialOrder> entityList = dtoListToEntityList(dtoList, fileName, System.currentTimeMillis());
         List<OfficialOrderDto> responseDtoList = createAll(entityList);
         return ResponseHandler.generateResponse("All excel file data", HttpStatus.OK, responseDtoList);
@@ -89,7 +94,10 @@ public class OfficialOrderService extends BaseService<OfficialOrderRepo, _Offici
 
     public ResponseEntity<?> deleteRows(List<Long> idList) {
         for (Long id : idList) {
-            _OfficialOrder entity = getRepository().findById(id).orElseThrow(() -> new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + "%s", "Employee not found")));
+            _OfficialOrder entity = getRepository().findById(id).orElseThrow(() -> new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + "%s", "Official order not found")));
+            if (entity.getState().equals(OffState.VALIDATED)){
+                throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "Data whose state is validated cannot be deleted"));
+            }
             entity.setState(OffState.DELETED);
             entity.setValueDate(LocalDate.now());
             try {
@@ -102,11 +110,35 @@ public class OfficialOrderService extends BaseService<OfficialOrderRepo, _Offici
     }
 
     @Transactional
-    public ResponseEntity<?> getAllByState() {
-        List<_OfficialOrder> officialOrderList = getRepository().findAllByState(OffState.ENTERED);
-        if (!officialOrderList.isEmpty()) {
-            List<OfficialOrderDto> officialOrderDtoList = getMapper().convertFromEntityList(officialOrderList);
+    public ResponseEntity<?> getAllByState(String type) {
+        List<_OfficialOrder> officialOrderList = new LinkedList<>();
+        List<OfficialOrderDto> officialOrderDtoList = new LinkedList<>();
+        if (!Strings.isNullOrEmpty(type)) {
+            switch (type) {
+                case DELETED:
+                    officialOrderList = getRepository().findAllByState(OffState.DELETED);
+                    officialOrderDtoList = entityListToDtoList(officialOrderList);
+                    break;
+                case VALIDATED:
+                    officialOrderList = getRepository().findAllByState(OffState.VALIDATED);
+                    officialOrderDtoList = entityListToDtoList(officialOrderList);
+                    break;
+                case ENTERED:
+                    officialOrderList = getRepository().findAllByState(OffState.ENTERED);
+                    officialOrderDtoList = entityListToDtoList(officialOrderList);
+                    break;
+                default:
+                    throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "Please check parameter!"));
+            }
             return ResponseHandler.generateResponse("All active official orders!", HttpStatus.OK, officialOrderDtoList);
+        }
+        throw new BadRequestException(String.format(ApiErrorMessages.BAD_REQUEST + "%s", "Please check parameter!"));
+
+    }
+
+    private List<OfficialOrderDto> entityListToDtoList(List<_OfficialOrder> entityList) {
+        if (!entityList.isEmpty()) {
+            return getMapper().convertFromEntityList(entityList);
         }
         throw new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + "%s", "Empty list!"));
     }

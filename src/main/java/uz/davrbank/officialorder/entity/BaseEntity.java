@@ -25,5 +25,5 @@ public class BaseEntity implements Serializable {
     private Long id;
 
     @Column(name = "created_date")
-    private String createdAt = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(new Date());
+    private String createdAt = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
 }

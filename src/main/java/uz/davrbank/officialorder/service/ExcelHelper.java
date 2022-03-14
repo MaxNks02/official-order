@@ -24,6 +24,7 @@ import uz.davrbank.officialorder.repo.lov.SnaznRepo;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,7 +59,11 @@ public class ExcelHelper {
             dto.setDocType(docType);
 
             dto.setDocNumber(Integer.parseInt(getCellValue(row, 1)));
-            dto.setDocDate(LocalDate.parse(getCellValue(row, 2)));
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//            dto.setDocDate(LocalDate.parse(getCellValue(row, 2)));
+            dto.setDocDate(LocalDate.parse(getCellValue(row, 2), formatter));
+
             dto.setDebtorAccount(getCellValue(row, 3));
 
             _Smfo smfo = smfoRepo.findById(getCellValue(row, 4)).orElseThrow(() -> new CustomNotFoundException(String.format(ApiErrorMessages.NOT_FOUND + "%s", "Correspondent bank not found")));
